@@ -43,31 +43,30 @@ const addErrorMessage = (type, message) => {
   input.insertAdjacentHTML('afterend', `<div class="invalid-feedback">${message}</div>`);
 }
 
-const signup = (params) => {
-  return fetch(`${endpoint}/signup`, {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json; charset=utf-8',
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(params)
-  })
-  .then((res) => {
-    const json = res.json();
+const signup = async (params) => {
+  try {
+    const res = await fetch(`${endpoint}/signup`, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json; charset=utf-8',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(params)
+    })
     if (res.status === 200) { // 登録成功
+      const json = await res.json();
       return json
     } else { // 登録失敗
       return Promise.reject(new Error('ユーザー登録失敗'))
-    }
-  })
-  .catch((res) => {
-    const errMessage = 'データを取得できませんでした。'
-    if (res.status !== 200) {
-      alert(res.errMessage)
+    } 
+  } catch (err) {
+    if (err.name === 'TypeError') {
+      alert('データを取得できませんでした')
     } else {
-      alert(res.message)
-    }
-  })
+      return Promise.reject(err.message)
+    } 
+    console.log(err);
+  } 
 }
 
 const onSubmit = async () => {
