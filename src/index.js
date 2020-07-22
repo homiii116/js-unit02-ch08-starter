@@ -54,18 +54,17 @@ const signup = async (params) => {
       body: JSON.stringify(params)
     })
     if (res.status === 200) { // 登録成功
-      const json = await res.json();
+      const json = res.json();
       return json
     } else { // 登録失敗
       return Promise.reject(new Error('ユーザー登録失敗'))
     } 
   } catch (err) {
     if (err.name === 'TypeError') {
-      alert('データを取得できませんでした')
+      return Promise.reject(new Error('データを取得できませんでした')) //可読性のため
     } else {
-      return Promise.reject(err.message)
+      return Promise.reject(err)
     } 
-    console.log(err);
   } 
 }
 
